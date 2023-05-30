@@ -1,7 +1,5 @@
 // import * as firebase from "firebase/app";
 // import "firebase/firestore"
-// remove .ex  => firebase.js
-
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { collection, doc, setDoc, getDoc,getDocs,addDoc } from "firebase/firestore"; 

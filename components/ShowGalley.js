@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getGallery } from "../utils/gallery";
+import { getGallery, delImage } from "../utils/gallery";
 
 function ShowGalley() {
   const [rawgallery, setrawgallery] = useState([]);
   const [gallery, setgallery] = useState(null);
   const [ViewPicture, setViewPicture] = useState(null);
+  const [DelState, setDelState] = useState(false);
 
   useEffect(() => {
     fetchImage();
@@ -53,12 +54,21 @@ function ShowGalley() {
 
   const BigPicture = (img) => {
     setViewPicture({
+      docId: img.docId,
+      name: img.name,
       src: img.src,
     });
   };
 
   const closeView = () => {
     setViewPicture(null);
+  };
+
+  const delFile = async (filename,docId) => {
+    let del = await delImage(filename,docId);
+    if(del){
+      location.reload()
+    }
   };
 
   return (
@@ -69,34 +79,53 @@ function ShowGalley() {
         } modal overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none  `}
       >
         <div className="modal-dialog mt-5">
-          <div className="modal-content ">
-          <div className="d-flex bg-dark  justify-content-center">
-              <button
-                type="button"
-                className="h2 text-light"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={closeView}
-              >
-                X
-              </button>
-              </div>
-
-            <div className="modal-body p-0">
-              <img src={ViewPicture && ViewPicture.src} />
-            </div>
-            <div className="d-flex  bg-dark  justify-content-center">
-              <button
-                type="button"
-                className="h2 text-light"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={closeView}
-              >
-                X
-              </button>
-            </div>
-          </div>
+          {ViewPicture && (
+                      <div className="modal-content ">
+                      <div className="d-flex bg-dark  justify-content-center">
+                        <button
+                          type="button"
+                          className="h2 text-light"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                          onClick={closeView}
+                        >
+                          X
+                        </button>
+                      </div>
+          
+                      <div className="modal-body p-0">
+                        <img src={ViewPicture.src} />
+                      </div>
+                      <div className="d-flex  bg-dark  justify-content-center">
+                        {DelState ? (
+                          <>
+                            <button
+                              type="button"
+                              className="px-4 py-1 bg-blue-400 my-2 mx-4"
+                              onClick={() => setDelState(true)}
+                            >
+                              ยกเลิก
+                            </button>
+                            <button
+                              type="button"
+                              className="px-4 py-1 bg-red-400 my-2  mx-4"
+                              onClick={() => delFile(ViewPicture.name,ViewPicture.docId)}
+                            >
+                              ยืนยัน
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            type="button"
+                            className="px-4 py-1 bg-red-400 my-2"
+                            onClick={() => setDelState(true)}
+                          >
+                            ลบรูป
+                          </button>
+                        )}
+                      </div>
+                    </div>
+          )}
 
         </div>
       </div>
